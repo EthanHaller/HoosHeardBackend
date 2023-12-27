@@ -6,6 +6,8 @@ require("dotenv/config")
 
 // Local Modules
 const authRouter = require("./routes/auth.js")
+const promptRouter = require("./routes/prompt.js")
+const responseRouter = require("./routes/response.js")
 
 // Server Initialization
 const app = express()
@@ -32,6 +34,8 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes will be written here
 app.use("/auth", authRouter)
+app.use("/prompt", promptRouter)
+app.use("/response", responseRouter)
 
 // Server Listen Along with Database
 // connection(in case of data persistence)
