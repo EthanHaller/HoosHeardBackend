@@ -12,8 +12,6 @@ const connectDB = async () => {
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
-	username: String,
-	password: String,
 	email: String,
 })
 
@@ -23,15 +21,15 @@ const PromptSchema = new Schema({
 })
 
 const ResponseSchema = new Schema({
-	userId: { type: ObjectId, ref: "User" },
-	promptId: { type: ObjectId, ref: "Prompt" },
-	text: "User's response to the prompt",
+	userId: { type: Schema.Types.ObjectId, ref: "User" },
+	promptId: { type: Schema.Types.ObjectId, ref: "Prompt" },
+	text: String,
 	createdAt: { type: Date, default: Date.now() },
 })
 
 const CommentSchema = new Schema({
-	userId: { type: ObjectId, ref: "User" },
-	responseId: { type: ObjectId, ref: "Response" },
+	userId: { type: Schema.Types.ObjectId, ref: "User" },
+	responseId: { type: Schema.Types.ObjectId, ref: "Response" },
 	text: String,
 	createdAt: { type: Date, default: Date.now() },
 })
@@ -41,4 +39,4 @@ const Prompt = mongoose.model("Prompt", PromptSchema)
 const Response = mongoose.model("Response", ResponseSchema)
 const Comment = mongoose.model("Comment", CommentSchema)
 
-module.exports = connectDB
+module.exports = { connectDB, User, Prompt, Response, Comment }
