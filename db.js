@@ -27,6 +27,11 @@ const ResponseSchema = new Schema({
 	createdAt: { type: Date, default: Date.now() },
 })
 
+const LikeSchema = new Schema({
+	userId: { type: Schema.Types.ObjectId, ref: "User" },
+	responseId: { type: Schema.Types.ObjectId, ref: "Response" },
+})
+
 const CommentSchema = new Schema({
 	userId: { type: Schema.Types.ObjectId, ref: "User" },
 	responseId: { type: Schema.Types.ObjectId, ref: "Response" },
@@ -37,6 +42,7 @@ const CommentSchema = new Schema({
 const User = mongoose.model("User", UserSchema)
 const Prompt = mongoose.model("Prompt", PromptSchema)
 const Response = mongoose.model("Response", ResponseSchema)
+const Like = mongoose.model("Like", LikeSchema)
 const Comment = mongoose.model("Comment", CommentSchema)
 
-module.exports = { connectDB, User, Prompt, Response, Comment }
+module.exports = { connectDB, User, Prompt, Response, Like, Comment }
