@@ -47,7 +47,7 @@ router.post("/create", async (req, res) => {
 
 // like a response
 router.post("/like", async (req, res) => {
-
+	
 })
 
 // unlike a response

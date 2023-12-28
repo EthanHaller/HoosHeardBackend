@@ -30,6 +30,7 @@ const ResponseSchema = new Schema({
 const LikeSchema = new Schema({
 	userId: { type: Schema.Types.ObjectId, ref: "User" },
 	responseId: { type: Schema.Types.ObjectId, ref: "Response" },
+	createdAt: { type: Date, default: Date.now() },
 })
 
 const CommentSchema = new Schema({
