@@ -3,6 +3,14 @@ var router = express.Router()
 
 const { User, Response } = require("../db")
 
+
+// get all responses
+router.get("/all", async (req, res) => {
+
+})
+
+
+// create a new response
 router.post("/create", async (req, res) => {
 	try {
 		const user = await User.findOne({
@@ -35,6 +43,16 @@ router.post("/create", async (req, res) => {
 		console.error("Error creating a new response:", error)
 		res.status(500).json({ error: "Internal Server Error" })
 	}
+})
+
+// like a response
+router.post("/like", async (req, res) => {
+
+})
+
+// unlike a response
+router.post("/unlike", async (req, res) => {
+	
 })
 
 module.exports = router
