@@ -2,7 +2,7 @@ var express = require("express")
 var router = express.Router()
 
 const { OAuth2Client } = require("google-auth-library")
-const { User } = require("../db")
+const { User, Response } = require("../db")
 
 router.post("/google/login", async (req, res) => {
 	try {
@@ -17,17 +17,17 @@ router.post("/google/login", async (req, res) => {
 
 		const payload = ticket.getPayload()
 
-		const existingUser = await User.findOne({ googleId: payload.sub })
+		const existingUser = await User.findOne({ email: payload.email })
 		if (existingUser) {
-			res.json({ user: existingUser })
+			const response = await Response.findOne({ userId: existingUser._id })
+			const hasResponded = response !== null
+			res.json({ user: existingUser, hasResponded: hasResponded })
 		} else {
-			const newUser = new User({
-				email: payload.email,
-			})
+			const newUser = new User({ email: payload.email })
 
 			const savedUser = await newUser.save()
 
-			res.json({ user: savedUser })
+			res.json({ user: savedUser, hasResponded: false })
 		}
 	} catch (error) {
 		console.error("Google login error:", error)
