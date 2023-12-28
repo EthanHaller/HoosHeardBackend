@@ -3,12 +3,27 @@ var router = express.Router()
 
 const { User, Response, Like } = require("../db")
 
-router.get("likes")
+// get all likes by user
+router.get("/", async (req, res) => {
+	try {
+		const user = await User.findOne({ email: req.body.email })
+		if (!user) {
+			return res.status(404).json({ error: "User not found" })
+		}
+
+		const likes = await Like.find({ userId: user._id })
+
+		res.json({ likes: likes })
+	} catch (error) {
+		console.error("Error getting all likes:", error)
+		res.status(500).json({ error: "Internal Server Error" })
+	}
+})
 
 // like a response
 router.post("/like", async (req, res) => {
 	try {
-		const user = await User.findOne({ email: req.body.emailn })
+		const user = await User.findOne({ email: req.body.email })
 		if (!user) {
 			return res.status(404).json({ error: "User not found" })
 		}

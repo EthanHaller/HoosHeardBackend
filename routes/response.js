@@ -4,7 +4,7 @@ var router = express.Router()
 const { User, Response } = require("../db")
 
 // get all responses
-router.get("/all", async (req, res) => {
+router.get("/", async (req, res) => {
 	try {
 		const responses = await Response.aggregate([
 			{
