@@ -36,8 +36,8 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes will be written here
 app.use("/auth", authRouter)
-app.use("/prompt", promptRouter)
-app.use("/response", responseRouter)
+app.use("/prompts", promptRouter)
+app.use("/responses", responseRouter)
 app.use("/likes", likeRouter)
 app.use("/comments", commentRouter)
 

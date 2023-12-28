@@ -42,6 +42,7 @@ router.get("/", async (req, res) => {
 })
 
 // create a new response
+// TODO: implement OpenAI API for response moderation
 router.post("/create", async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email })
