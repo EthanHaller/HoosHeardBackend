@@ -6,7 +6,33 @@ const { User, Response, Like } = require("../db")
 // get all responses
 router.get("/all", async (req, res) => {
 	try {
-		const responses = await Response.find()
+		const responses = await Response.aggregate([
+			{
+				$lookup: { // from the likes collection get all documents with matching responseId
+					from: "likes",
+					localField: "_id",
+					foreignField: "responseId",
+					as: "likes",
+				},
+			},
+			{
+				$lookup: { // from the comments collection get all documents with matching responseId
+					from: "comments",
+					localField: "_id",
+					foreignField: "responseId",
+					as: "comments",
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					text: 1,
+					numLikes: { $size: "$likes" },
+					numComments: { $size: "$comments" },
+					createdAt: 1,
+				},
+			},
+		])
 
 		res.json({ responses: responses })
 	} catch (error) {
