@@ -8,6 +8,8 @@ require("dotenv/config")
 const authRouter = require("./routes/auth.js")
 const promptRouter = require("./routes/prompt.js")
 const responseRouter = require("./routes/response.js")
+const likeRouter = require("./routes/likes.js")
+const commentRouter = require("./routes/comment.js")
 
 // Server Initialization
 const app = express()
@@ -36,6 +38,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/auth", authRouter)
 app.use("/prompt", promptRouter)
 app.use("/response", responseRouter)
+app.use("/likes", likeRouter)
+app.use("/comments", commentRouter)
 
 // Server Listen Along with Database
 // connection(in case of data persistence)
