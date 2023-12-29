@@ -6,7 +6,7 @@ const { User, Response, Like } = require("../db")
 // get all likes by user
 router.get("/", async (req, res) => {
 	try {
-		const user = await User.findOne({ email: req.body.email })
+		const user = await User.findOne({ email: req.query.email })
 		if (!user) {
 			return res.status(404).json({ error: "User not found" })
 		}
@@ -60,8 +60,7 @@ router.post("/unlike", async (req, res) => {
 			return res.status(404).json({ error: "Response not found" })
 		}
 
-		await Like.findOneAndRemove({ userId: user._id, responseId: response._id })
-		const result = await Like.findOneAndRemove({ userId: user._id, responseId: response._id })
+		const result = await Like.findOneAndDelete({ userId: user._id, responseId: response._id })
 		if (!result) {
 			res.json({ message: "Response not liked or already unliked" })
 		} else {
