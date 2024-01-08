@@ -1,4 +1,5 @@
 var express = require("express")
+const mongoose = require("mongoose")
 var router = express.Router()
 
 const { User, Response } = require("../db")
@@ -8,7 +9,8 @@ router.get("/", async (req, res) => {
 	try {
 		const responses = await Response.aggregate([
 			{
-				$lookup: { // from the likes collection get all documents with matching responseId
+				$lookup: {
+					// from the likes collection get all documents with matching responseId
 					from: "likes",
 					localField: "_id",
 					foreignField: "responseId",
@@ -16,7 +18,8 @@ router.get("/", async (req, res) => {
 				},
 			},
 			{
-				$lookup: { // from the comments collection get all documents with matching responseId
+				$lookup: {
+					// from the comments collection get all documents with matching responseId
 					from: "comments",
 					localField: "_id",
 					foreignField: "responseId",
@@ -37,6 +40,55 @@ router.get("/", async (req, res) => {
 		res.json({ responses: responses })
 	} catch (error) {
 		console.error("Error fetching all responses:", error)
+		res.status(500).json({ error: "Internal Server Error" })
+	}
+})
+
+// get a response by ID
+router.get("/:id", async (req, res) => {
+	try {
+		const responseId = req.params.id
+
+		const response = await Response.aggregate([
+			{
+				$match: {
+					_id: new mongoose.Types.ObjectId(responseId), // Convert the string ID to ObjectId
+				},
+			},
+			{
+				$lookup: {
+					from: "likes",
+					localField: "_id",
+					foreignField: "responseId",
+					as: "likes",
+				},
+			},
+			{
+				$lookup: {
+					from: "comments",
+					localField: "_id",
+					foreignField: "responseId",
+					as: "comments",
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					text: 1,
+					numLikes: { $size: "$likes" },
+					numComments: { $size: "$comments" },
+					createdAt: 1,
+				},
+			},
+		])
+
+		if (response.length === 0) {
+			return res.status(404).json({ error: "Response not found" })
+		}
+
+		res.json({ response: response[0] })
+	} catch (error) {
+		console.error("Error fetching response by ID:", error)
 		res.status(500).json({ error: "Internal Server Error" })
 	}
 })
