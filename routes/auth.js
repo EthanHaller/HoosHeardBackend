@@ -21,7 +21,8 @@ router.post("/google/login", async (req, res) => {
 		if (existingUser) {
 			const response = await Response.findOne({ userId: existingUser._id })
 			const hasResponded = response !== null
-			res.json({ user: existingUser, hasResponded: hasResponded })
+			const responseId = response && response._id
+			res.json({ user: existingUser, hasResponded: hasResponded, responseId: responseId })
 		} else {
 			const newUser = new User({ email: payload.email })
 

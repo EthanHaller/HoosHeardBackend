@@ -52,7 +52,7 @@ router.get("/:id", async (req, res) => {
 		const response = await Response.aggregate([
 			{
 				$match: {
-					_id: new mongoose.Types.ObjectId(responseId), // Convert the string ID to ObjectId
+					_id: new mongoose.Types.ObjectId(responseId),
 				},
 			},
 			{

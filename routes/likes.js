@@ -1,12 +1,14 @@
 var express = require("express")
+const mongoose = require("mongoose")
 var router = express.Router()
 
 const { User, Response, Like } = require("../db")
 
 // get all likes by user
-router.get("/", async (req, res) => {
+router.get("/:userId", async (req, res) => {
 	try {
-		const user = await User.findOne({ email: req.query.email })
+		console.log(req.params.userId)
+		const user = await User.findOne({ _id: new mongoose.Types.ObjectId(req.params.userId) })
 		if (!user) {
 			return res.status(404).json({ error: "User not found" })
 		}
@@ -33,6 +35,14 @@ router.post("/like", async (req, res) => {
 			return res.status(404).json({ error: "Response not found" })
 		}
 
+		const existingLike = await Like.findOne({
+			userId: user._id,
+			responseId: response._id,
+		})
+		if (existingLike) {
+			return res.json({ message: "Response already liked by the user" })
+		}
+
 		const newLike = new Like({
 			userId: user._id,
 			responseId: response._id,
@@ -40,7 +50,7 @@ router.post("/like", async (req, res) => {
 		})
 		const savedLike = await newLike.save()
 
-		res.json({ response: savedResponse })
+		res.json({ like: savedLike })
 	} catch (error) {
 		console.error("Error liking a response:", error)
 		res.status(500).json({ error: "Internal Server Error" })

@@ -9,7 +9,7 @@ const authRouter = require("./routes/auth.js")
 const promptRouter = require("./routes/prompt.js")
 const responseRouter = require("./routes/response.js")
 const likeRouter = require("./routes/likes.js")
-const commentRouter = require("./routes/comment.js")
+const commentRouter = require("./routes/comments.js")
 
 // Server Initialization
 const app = express()
