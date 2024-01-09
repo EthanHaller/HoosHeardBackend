@@ -5,12 +5,13 @@ var router = express.Router()
 const { User, Response } = require("../db")
 
 // get all responses
-router.get("/", async (req, res) => {
+router.get("/:userId", async (req, res) => {
 	try {
+		const userId = new mongoose.Types.ObjectId(req.params.userId)
+
 		const responses = await Response.aggregate([
 			{
 				$lookup: {
-					// from the likes collection get all documents with matching responseId
 					from: "likes",
 					localField: "_id",
 					foreignField: "responseId",
@@ -19,7 +20,6 @@ router.get("/", async (req, res) => {
 			},
 			{
 				$lookup: {
-					// from the comments collection get all documents with matching responseId
 					from: "comments",
 					localField: "_id",
 					foreignField: "responseId",
@@ -33,6 +33,9 @@ router.get("/", async (req, res) => {
 					numLikes: { $size: "$likes" },
 					numComments: { $size: "$comments" },
 					createdAt: 1,
+					likedByUser: {
+						$in: [userId, "$likes.userId"],
+					},
 				},
 			},
 		])
@@ -45,14 +48,15 @@ router.get("/", async (req, res) => {
 })
 
 // get a response by ID
-router.get("/:id", async (req, res) => {
+router.get("/:userId/:id", async (req, res) => {
 	try {
-		const responseId = req.params.id
+		const responseId = new mongoose.Types.ObjectId(req.params.id)
+		const userId = new mongoose.Types.ObjectId(req.params.userId)
 
 		const response = await Response.aggregate([
 			{
 				$match: {
-					_id: new mongoose.Types.ObjectId(responseId),
+					_id: responseId,
 				},
 			},
 			{
@@ -78,6 +82,9 @@ router.get("/:id", async (req, res) => {
 					numLikes: { $size: "$likes" },
 					numComments: { $size: "$comments" },
 					createdAt: 1,
+					likedByUser: {
+						$in: [userId, "$likes.userId"],
+					},
 				},
 			},
 		])
