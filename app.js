@@ -3,6 +3,7 @@ const { connectDB } = require("./db")
 const { openaiTest } = require("./openai")
 const axios = require("axios")
 const cors = require("cors")
+const cron = require("node-cron")
 require("dotenv/config")
 
 // Local Modules
@@ -18,6 +19,12 @@ const PORT = 8080
 
 connectDB()
 // openaiTest()
+
+cron.schedule('0 4 * * *', () => {
+	console.log('Initiating daily cleanup at 06:00 at America/New_York timezone');
+  }, {
+	timezone: "America/New_York"
+  });
 
 // cors configuration
 app.use(cors())
