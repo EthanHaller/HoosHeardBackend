@@ -1,6 +1,6 @@
 const OpenAI = require("openai")
 
-async function openaiTest() {
+async function generatePrompt() {
 	const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY })
 
 	const completion = await openai.chat.completions.create({
@@ -18,7 +18,7 @@ async function openaiTest() {
     - The prompt should not include any instructions to the user (such as "be concise", "describe", "explain")
     
     
-    I will type a JSON object with past responses as inspiration as well as the current date. Please return to me a new prompt delimited by triple quotes (i.e. """). `,
+    I will type a JSON object with past responses as inspiration as well as the current date. Please return to me a new prompt surrounded by triple quotes (e.g. """new prompt"""). `,
 			},
 			{
 				role: "user",
@@ -59,7 +59,12 @@ async function openaiTest() {
 		model: "gpt-3.5-turbo",
 	})
 
-	console.log(completion.choices[0])
+    let newPrompt = completion.choices[0].message.content
+	const startIdx = newPrompt.indexOf('"""') + 3
+	const endIdx = newPrompt.lastIndexOf('"""')
+    newPrompt = newPrompt.slice(startIdx, endIdx);
+    console.log(newPrompt)
+	return newPrompt
 }
 
-module.exports = { openaiTest }
+module.exports = { generatePrompt }

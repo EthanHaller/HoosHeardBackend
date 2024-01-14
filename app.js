@@ -1,6 +1,6 @@
 const express = require("express")
 const { connectDB } = require("./db")
-const { openaiTest } = require("./openai")
+const { schedule } = require("./dailyCleanup")
 const axios = require("axios")
 const cors = require("cors")
 require("dotenv/config")
@@ -17,7 +17,7 @@ const app = express()
 const PORT = 8080
 
 connectDB()
-// openaiTest()
+schedule()
 
 
 // cors configuration
