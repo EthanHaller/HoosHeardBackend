@@ -2,6 +2,7 @@ const OpenAI = require("openai")
 
 async function generatePrompt() {
 	const openai = new OpenAI({ apiKey: process.env.OPENAI_KEY })
+    const today = new Date()
 
 	const completion = await openai.chat.completions.create({
 		messages: [
@@ -24,36 +25,36 @@ async function generatePrompt() {
 				role: "user",
 				content: `[
                     {
-                    "date": "01/13/2024",
+                    "date": "Sat Jan 13 2024",
                     "prompt": "If you had five other lives to lead, what would you do in each of them?"
                     },
                     {
-                    "date": "01/12/2024",
+                    "date": "Fri Jan 12 2024",
                     "prompt": "If you could spend one day doing anything you want, what would you do?"
                     },
                     {
-                    "date": "01/11/2024",
+                    "date": "Thu Jan 11 2024",
                     "prompt": "What is your biggest regret? Why do you regret it? "
                     },
                     {
-                    "date": "01/10/2024",
+                    "date": "Wed Jan 10 2024",
                     "prompt": "Who is your biggest role model? What have they done that has made you look up to them?"
                     },
                     {
-                    "date": "01/09/2024",
+                    "date": "Tue Jan 9 2024",
                     "prompt": "List and describe three things you could do that would make you a better friend. Are you willing to do them?"
                     },
                     {
-                    "date": "01/08/2024",
+                    "date": "Mon Jan 8 2024",
                     "prompt": "What were you most thankful for last year? "
                     },
                     {
-                    "date": "01/07/2024",
+                    "date": "Sun Jan 7 2024",
                     "prompt": "Are you in the right path? If not, why not?"
                     },
                     ]
                     
-                    Today's Date: "01/14/2024"`,
+                    Today's Date: "${today.toDateString()}"`,
 			},
 		],
 		model: "gpt-3.5-turbo",
