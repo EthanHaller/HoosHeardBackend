@@ -48,7 +48,7 @@ router.get("/:userId", async (req, res) => {
 })
 
 // get a response by ID
-router.get("/:userId/:id", async (req, res) => {
+router.get("/one/:userId/:id", async (req, res) => {
 	try {
 		const responseId = new mongoose.Types.ObjectId(req.params.id)
 		const userId = new mongoose.Types.ObjectId(req.params.userId)

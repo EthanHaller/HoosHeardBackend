@@ -7,7 +7,6 @@ const { User, Response, Like } = require("../db")
 // get all likes by user
 router.get("/:userId", async (req, res) => {
 	try {
-		console.log(req.params.userId)
 		const user = await User.findOne({ _id: new mongoose.Types.ObjectId(req.params.userId) })
 		if (!user) {
 			return res.status(404).json({ error: "User not found" })
