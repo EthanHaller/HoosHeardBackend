@@ -64,7 +64,6 @@ async function generatePrompt() {
 	const startIdx = newPrompt.indexOf('"""') + 3
 	const endIdx = newPrompt.lastIndexOf('"""')
     newPrompt = newPrompt.slice(startIdx, endIdx);
-    console.log(newPrompt)
 	return newPrompt
 }
 
