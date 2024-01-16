@@ -1,4 +1,5 @@
 var express = require("express")
+const mongoose = require("mongoose")
 var router = express.Router()
 
 const { OAuth2Client } = require("google-auth-library")
@@ -32,6 +33,25 @@ router.post("/google/login", async (req, res) => {
 		}
 	} catch (error) {
 		console.error("Google login error:", error)
+		res.status(500).json({ error: "Internal Server Error" })
+	}
+})
+
+router.get("/getuser/:userId", async (req, res) => {
+	try {
+		const userId = new mongoose.Types.ObjectId(req.params.userId)
+
+		const existingUser = await User.findOne({ _id: userId })
+		if (existingUser) {
+			const response = await Response.findOne({ userId: existingUser._id })
+			const hasResponded = response !== null
+			const responseId = response && response._id
+			res.json({ user: existingUser, hasResponded: hasResponded, responseId: responseId })
+		} else {
+			return res.status(404).json({ error: "User not found" })
+		}
+	} catch (error) {
+		console.error("Error getting user information:", error)
 		res.status(500).json({ error: "Internal Server Error" })
 	}
 })
