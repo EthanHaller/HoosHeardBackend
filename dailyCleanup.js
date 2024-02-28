@@ -3,17 +3,6 @@ const mongoose = require("mongoose")
 const { Prompt, User, Response, Like, Comment } = require("./db")
 const { generatePrompt } = require("./openai")
 
-// Function to delete all users
-const deleteAllUsers = async () => {
-	console.log("Deleting all Users...")
-	try {
-		await User.deleteMany({})
-		console.log("All users deleted successfully.")
-	} catch (error) {
-		console.error("Error deleting users:", error)
-	}
-}
-
 // Function to delete all responses
 const deleteAllResponses = async () => {
 	console.log("Deleting all Responses...")
@@ -63,7 +52,6 @@ function schedule() {
 		// "* * * * *",
 		async () => {
 			console.log("Initiating daily cleanup at 04:00 at America/New_York timezone")
-			await deleteAllUsers()
 			await deleteAllResponses()
 			await deleteAllLikes()
 			await deleteAllComments()
