@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 var router = express.Router()
 
 const { User, Response } = require("../db")
+const { moderate } = require("../openai")
 
 // get all responses
 router.get("/:userId", async (req, res) => {
@@ -101,7 +102,6 @@ router.get("/one/:userId/:id", async (req, res) => {
 })
 
 // create a new response
-// TODO: implement OpenAI API for response moderation
 router.post("/create", async (req, res) => {
 	try {
 		const user = await User.findOne({ email: req.body.email })
@@ -116,6 +116,13 @@ router.post("/create", async (req, res) => {
 
 		if (existingResponse) {
 			return res.status(400).json({ error: "User has already responded" })
+		}
+
+		const moderation = await moderate(req.body.text)
+		const flagged = moderation.results[0].flagged
+
+		if (flagged) {
+			return res.status(403).json({ flagged: true, error: "Response flagged for harmful content" })
 		}
 
 		const newResponse = new Response({

@@ -2,6 +2,7 @@ var express = require("express")
 var router = express.Router()
 
 const { User, Response, Comment } = require("../db")
+const { moderate } = require("../openai")
 
 // get all comments by responseID
 router.get("/:responseId", async (req, res) => {
@@ -31,6 +32,13 @@ router.post("/create", async (req, res) => {
 		const response = await Response.findOne({ _id: req.body.responseId })
 		if (!response) {
 			return res.status(404).json({ error: "Response not found" })
+		}
+
+		const moderation = await moderate(req.body.text)
+		const flagged = moderation.results[0].flagged
+
+		if (flagged) {
+			return res.status(403).json({ flagged: true, error: "Comment flagged for harmful content" })
 		}
 
 		const newComment = new Comment({
