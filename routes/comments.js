@@ -8,10 +8,15 @@ const { moderate } = require("../openai")
 router.get("/:responseId", async (req, res) => {
 	try {
 		const responseId = req.params.responseId
+		const { page } = req.query;
+        const limit = 10;
+        const skip = (page - 1) * limit;
 
 		const comments = await Comment.find({ responseId: responseId })
 			.populate("userId", "_id")
 			.sort({ createdAt: "asc" })
+			.skip(skip)
+			.limit(limit)
 
 		res.json({ comments: comments })
 	} catch (error) {
