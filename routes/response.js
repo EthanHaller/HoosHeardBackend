@@ -5,12 +5,73 @@ var router = express.Router()
 const { User, Response } = require("../db")
 const { moderate } = require("../openai")
 
-// get all responses
+// get responses with pagination and sorting
 router.get("/:userId", async (req, res) => {
 	try {
 		const userId = new mongoose.Types.ObjectId(req.params.userId)
+		const { page, sort } = req.query
+		const limit = 10
+		const skip = (parseInt(page) - 1) * limit
 
 		const responses = await Response.aggregate([
+			{
+				$match: { userId: { $ne: userId } },
+			},
+			{
+				$lookup: {
+					from: "likes",
+					localField: "_id",
+					foreignField: "responseId",
+					as: "likes",
+				},
+			},
+			{
+				$lookup: {
+					from: "comments",
+					localField: "_id",
+					foreignField: "responseId",
+					as: "comments",
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					text: 1,
+					numLikes: { $size: "$likes" },
+					numComments: { $size: "$comments" },
+					createdAt: 1,
+					likedByUser: {
+						$in: [userId, "$likes.userId"],
+					},
+				},
+			},
+			{
+				$skip: skip,
+			},
+			{
+				$limit: limit,
+			},
+			{
+				$sort: sort === "recent" ? { createdAt: -1 } : { numLikes: -1 },
+			},
+		])
+		res.json({ responses })
+	} catch (error) {
+		console.error("Error fetching responses:", error)
+		res.status(500).json({ error: "Internal Server Error" })
+	}
+})
+
+//get a response for a user
+router.get("/mine/:userId", async (req, res) => {
+	try {
+		const userId = new mongoose.Types.ObjectId(req.params.userId)
+		const responses = await Response.aggregate([
+			{
+				$match: {
+					userId: userId,
+				},
+			},
 			{
 				$lookup: {
 					from: "likes",
@@ -41,14 +102,14 @@ router.get("/:userId", async (req, res) => {
 			},
 		])
 
-		res.json({ responses: responses })
+		res.json({ response: responses[0] })
 	} catch (error) {
-		console.error("Error fetching all responses:", error)
+		console.error("Error getting responses by user ID:", error)
 		res.status(500).json({ error: "Internal Server Error" })
 	}
 })
 
-// get a response by ID
+// get a response by response ID
 router.get("/one/:userId/:id", async (req, res) => {
 	try {
 		const responseId = new mongoose.Types.ObjectId(req.params.id)
