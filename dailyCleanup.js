@@ -61,4 +61,4 @@ async function cleanup() {
 	console.log("Successfully completed daily cleanup")
 }
 
-cleanup()
+console.log(generatePrompt())
