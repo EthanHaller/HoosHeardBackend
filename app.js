@@ -1,6 +1,5 @@
 const express = require("express")
 const { connectDB } = require("./db")
-const { schedule } = require("./dailyCleanup")
 const axios = require("axios")
 const cors = require("cors")
 require("dotenv/config")
@@ -45,7 +44,6 @@ app.use("/comments", commentRouter)
 app.listen(PORT, (error) => {
 	if (!error) {
 		connectDB()
-		schedule()
 		console.log("Server is Successfully Running, and App is listening on port " + PORT)
 	} else console.log("Error occurred, server can't start", error)
 })

@@ -1,5 +1,5 @@
 const cron = require("node-cron")
-const { Prompt, Response, Like, Comment } = require("./db")
+const { connectDB, Prompt, Response, Like, Comment } = require("./db")
 const { generatePrompt } = require("./prompt")
 
 // Function to delete all responses
@@ -68,4 +68,21 @@ function schedule() {
 	)
 }
 
-module.exports = { schedule }
+async function cleanup() {
+	await connectDB()
+
+	console.log("cleanup")
+
+	// await deleteAllResponses()
+	// await deleteAllLikes()
+	// await deleteAllComments()
+	// console.log("Successfully deleted all necessary documents")
+	// console.log("Generating a new prompt...")
+	// const newPrompt = generatePrompt()
+	// console.log("Successfully generated new prompt:")
+	// console.log(newPrompt)
+	// await savePrompt(newPrompt)
+	// console.log("Successfully completed daily cleanup")
+}
+
+cleanup()
