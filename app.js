@@ -14,7 +14,7 @@ const commentRouter = require("./routes/comments.js")
 
 // Server Initialization
 const app = express()
-const PORT = 8080
+const PORT = process.env.PORT;
 
 connectDB()
 schedule()
