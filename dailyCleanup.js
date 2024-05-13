@@ -46,6 +46,7 @@ const savePrompt = async (newPromptText) => {
 }
 
 function schedule() {
+	console.log("Scheduling Daily Cleanup")
 	cron.schedule(
 		"0 4 * * *",
 		async () => {
