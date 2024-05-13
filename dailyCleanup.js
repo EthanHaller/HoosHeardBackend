@@ -45,44 +45,20 @@ const savePrompt = async (newPromptText) => {
 	}
 }
 
-function schedule() {
-	console.log("Scheduling Daily Cleanup")
-	cron.schedule(
-		"0 4 * * *",
-		async () => {
-			console.log("Initiating daily cleanup at 04:00 at America/New_York timezone")
-			await deleteAllResponses()
-			await deleteAllLikes()
-			await deleteAllComments()
-			console.log("Successfully deleted all necessary documents")
-			console.log("Generating a new prompt...")
-			const newPrompt = generatePrompt()
-			console.log("Successfully generated new prompt:")
-			console.log(newPrompt)
-			await savePrompt(newPrompt)
-			console.log("Successfully completed daily cleanup")
-		},
-		{
-			timezone: "America/New_York",
-		}
-	)
-}
-
 async function cleanup() {
 	await connectDB()
 
-	console.log("cleanup")
-
-	// await deleteAllResponses()
-	// await deleteAllLikes()
-	// await deleteAllComments()
-	// console.log("Successfully deleted all necessary documents")
-	// console.log("Generating a new prompt...")
-	// const newPrompt = generatePrompt()
-	// console.log("Successfully generated new prompt:")
-	// console.log(newPrompt)
-	// await savePrompt(newPrompt)
-	// console.log("Successfully completed daily cleanup")
+	console.log("Initiating daily cleanup at 04:00 at America/New_York timezone")
+	await deleteAllResponses()
+	await deleteAllLikes()
+	await deleteAllComments()
+	console.log("Successfully deleted all necessary documents")
+	console.log("Generating a new prompt...")
+	const newPrompt = generatePrompt()
+	console.log("Successfully generated new prompt:")
+	console.log(newPrompt)
+	await savePrompt(newPrompt)
+	console.log("Successfully completed daily cleanup")
 }
 
 cleanup()
