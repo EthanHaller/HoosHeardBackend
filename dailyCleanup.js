@@ -1,7 +1,6 @@
 const cron = require("node-cron")
-const mongoose = require("mongoose")
-const { Prompt, User, Response, Like, Comment } = require("./db")
-const { generatePrompt } = require("./openai")
+const { Prompt, Response, Like, Comment } = require("./db")
+const { generatePrompt } = require("./prompt")
 
 // Function to delete all responses
 const deleteAllResponses = async () => {
@@ -49,7 +48,6 @@ const savePrompt = async (newPromptText) => {
 function schedule() {
 	cron.schedule(
 		"0 4 * * *",
-		// "* * * * *",
 		async () => {
 			console.log("Initiating daily cleanup at 04:00 at America/New_York timezone")
 			await deleteAllResponses()
@@ -57,7 +55,7 @@ function schedule() {
 			await deleteAllComments()
 			console.log("Successfully deleted all necessary documents")
 			console.log("Generating a new prompt...")
-			const newPrompt = await generatePrompt()
+			const newPrompt = generatePrompt()
 			console.log("Successfully generated new prompt:")
 			console.log(newPrompt)
 			await savePrompt(newPrompt)
