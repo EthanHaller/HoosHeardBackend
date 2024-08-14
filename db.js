@@ -13,7 +13,8 @@ const connectDB = async () => {
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
-	email: String,
+	username: String,
+	password: String,
 })
 
 const PromptSchema = new Schema({
